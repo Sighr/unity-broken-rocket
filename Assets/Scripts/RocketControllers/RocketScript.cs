@@ -6,7 +6,8 @@ public class RocketScript : MonoBehaviour
     public GameSettings settings;
     
     #region CachedDependencies
-
+    
+    public HUDBonusManager hudBonusManager;
     public ParticleSystem ps;
     public GameManager gameManager;
 
@@ -74,6 +75,9 @@ public class RocketScript : MonoBehaviour
     public void ApplyBonus(GameObject go)
     {
         BonusScript.Bonus bonus = go.GetComponent<BonusScript>().bonus;
+        
+        // it should not be there - rather in gamemanager
+        hudBonusManager.AddBonus(bonus);
         
         // special case - bonus is point - goes straight to GameManager
         if (bonus.type == BonusScript.Bonus.BonusType.Point)
