@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce5fc500de1e4a7b9709ae70e0266570, type: 3}
+  m_Name: Settings
+  m_EditorClassIdentifier: 
+  movement:
+    initialTorque: 2.37
+    initialVerticalSpeed: 100
+    penaltyHeight: 200
+    gravityPenaltyQuad: 0.00004
+  particles:
+    afterburnSeconds: 1
+    afterburnParticleStartSpeed: 10
+  cloud:
+    maxFloatDistance: 100
+    timeTillRedirect: 10
+  bonusSpawn:
+    spawnTimeInterval: 1
+    spawnMinDistance: 50
+    spawnMaxDistance: 500
+  enemy:
+    spawnTimeInterval: 10
+    spawnMinDistance: 300
+    spawnMaxDistance: 500
+    minSpeed: 3
+    maxSpeed: 10
+    minLifeTime: 300
+    maxLifeTime: 600
