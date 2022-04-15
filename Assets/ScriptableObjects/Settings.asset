@@ -24,11 +24,11 @@ MonoBehaviour:
     maxFloatDistance: 100
     timeTillRedirect: 10
   bonusSpawn:
-    spawnTimeInterval: 1
+    spawnTimeInterval: 0.5
     spawnMinDistance: 50
     spawnMaxDistance: 500
   enemy:
-    spawnTimeInterval: 10
+    spawnTimeInterval: 5
     spawnMinDistance: 300
     spawnMaxDistance: 500
     minSpeed: 3

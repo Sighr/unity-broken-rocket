@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementRocketController : AbstractRocketController, IFixedUpdateable, IBonusApplicable
+public class MovementRocketController : AbstractRocketController, IFixedUpdateable
 {
     private readonly Rigidbody2D _rb;
     private readonly Transform _transform;
@@ -23,26 +23,11 @@ public class MovementRocketController : AbstractRocketController, IFixedUpdateab
 
     public void FixedUpdate()
     {
-        ProcessBonuses();
-
         ProcessKeyboardInputFixed();
         ProcessTouchInputFixed();
         ApplyGravityPenalty();
     }
     
-    // maybe it should be extracted into the base class. somehow put it as protected member into interface 
-    private void ProcessBonuses()
-    {
-        for (var index = BonusList.Count - 1; index >= 0; index--)
-        {
-            var bonus = BonusList[index];
-            bonus.duration -= Time.fixedDeltaTime;
-            if (bonus.duration < 0)
-            {
-                BonusList.RemoveAt(index);
-            }
-        }
-    }
 
     private void ProcessTouchInputFixed()
     {
@@ -80,18 +65,13 @@ public class MovementRocketController : AbstractRocketController, IFixedUpdateab
     private float GetVerticalSpeed()
     {
         float speed = _verticalSpeed;
-        foreach (var bonus in BonusList)
+        foreach (var bonus in OuterScript.appliedBonuses)
         {
-            speed *= bonus.power;
+            if (bonus.type == BonusScript.Bonus.BonusType.Speed)
+            {
+                speed *= bonus.power;
+            }
         }
-        Debug.Log(speed);
         return speed;
     }
-
-    #region Bonuses
-    
-    public List<BonusScript.Bonus> BonusList { get; } = new();
-    public BonusScript.Bonus.BonusType[] ApplicableBonusTypes => new[] {BonusScript.Bonus.BonusType.Speed};
-
-    #endregion
 }

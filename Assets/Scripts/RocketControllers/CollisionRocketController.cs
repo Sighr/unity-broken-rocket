@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionRocketController : AbstractRocketController, IFixedUpdateable, IColliderController, IBonusApplicable
+public class CollisionRocketController : AbstractRocketController, IColliderController
 {
     private GameManager _gameManager;
     
@@ -15,7 +15,7 @@ public class CollisionRocketController : AbstractRocketController, IFixedUpdatea
     {
         var go = collision.gameObject;
         if (go.layer == LayerMask.NameToLayer("Obstacles")
-            || go.layer == LayerMask.NameToLayer("Enemies") && BonusList.Count == 0)
+            || go.layer == LayerMask.NameToLayer("Enemies") && OuterScript.appliedBonuses.Count == 0)
         {
             _gameManager.Lose();
         }
@@ -29,29 +29,4 @@ public class CollisionRocketController : AbstractRocketController, IFixedUpdatea
             OuterScript.ApplyBonus(go);
         }
     }
-
-    public void FixedUpdate()
-    {
-        ProcessBonuses();
-    }
-    
-    private void ProcessBonuses()
-    {
-        for (var index = BonusList.Count - 1; index >= 0; index--)
-        {
-            var bonus = BonusList[index];
-            bonus.duration -= Time.fixedDeltaTime;
-            if (bonus.duration < 0)
-            {
-                BonusList.RemoveAt(index);
-            }
-        }
-    }
-
-    #region Bonuses
-
-    public List<BonusScript.Bonus> BonusList { get; } = new();
-    public BonusScript.Bonus.BonusType[] ApplicableBonusTypes => new[] {BonusScript.Bonus.BonusType.Shield};
-
-    #endregion
 }

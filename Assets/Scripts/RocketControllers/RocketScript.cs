@@ -8,6 +8,7 @@ public class RocketScript : MonoBehaviour
     #region CachedDependencies
     
     public HUDBonusManager hudBonusManager;
+    public GameObject shieldVisual;
     public ParticleSystem ps;
     public GameManager gameManager;
 
@@ -24,7 +25,7 @@ public class RocketScript : MonoBehaviour
         _controllers = new AbstractRocketController[]
         {
           new MovementRocketController(this, GetComponent<Rigidbody2D>(), settings.movement),
-          new ParticlesRocketController(this, ps, settings.particles),
+          new VisualRocketController(this, ps, shieldVisual, settings.particles),
           new CollisionRocketController(this, gameManager),
         };
         foreach (var controller in _controllers)
@@ -50,6 +51,7 @@ public class RocketScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        ProcessBonuses();
         foreach (var fixedUpdateable in _fixedUpdateables)
         {
             fixedUpdateable.FixedUpdate();
@@ -71,14 +73,32 @@ public class RocketScript : MonoBehaviour
             colliderController.OnTriggerEnter2D(collider2d);
         }
     }
-    
+
+    #region Bonuses
+
+    public List<BonusScript.Bonus> appliedBonuses = new();
+
+    private void ProcessBonuses()
+    {
+        for (var index = appliedBonuses.Count - 1; index >= 0; index--)
+        {
+            var bonus = appliedBonuses[index];
+            bonus.duration -= Time.fixedDeltaTime;
+            if (bonus.duration < 0)
+            {
+                foreach (var bonusApplicable in _bonusApplicables)
+                {
+                    bonusApplicable.OnBonusDeleted(bonus);
+                }
+                appliedBonuses.RemoveAt(index);
+            }
+        }
+    }
+
     public void ApplyBonus(GameObject go)
     {
         BonusScript.Bonus bonus = go.GetComponent<BonusScript>().bonus;
-        
-        // it should not be there - rather in gamemanager
-        hudBonusManager.AddBonus(bonus);
-        
+
         // special case - bonus is point - goes straight to GameManager
         if (bonus.type == BonusScript.Bonus.BonusType.Point)
         {
@@ -86,17 +106,30 @@ public class RocketScript : MonoBehaviour
             return;
         }
         
+        appliedBonuses.Add(bonus);
+        
+        // it should not be there - rather in gamemanager
+        hudBonusManager.AddBonus(bonus);
+
+        
         foreach (var bonusApplicable in _bonusApplicables)
         {
-            bonusApplicable.ApplyBonus(bonus);
+            bonusApplicable.OnBonusAdded(bonus);
         }
     }
     
     public void ResetBonuses()
     {
-        foreach (var bonusApplicable in _bonusApplicables)
+        foreach (var bonus in appliedBonuses)
         {
-            bonusApplicable.ResetBonuses();
+            foreach (var bonusApplicable in _bonusApplicables)
+            {
+                bonusApplicable.OnBonusDeleted(bonus);
+            }   
         }
+        hudBonusManager.ResetBonuses();
+        appliedBonuses.Clear();
     }
+    
+    #endregion
 }

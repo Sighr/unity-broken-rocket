@@ -4,19 +4,13 @@ using UnityEngine;
 
 public interface IBonusApplicable
 {
-    public List<BonusScript.Bonus> BonusList {get;}
-    public BonusScript.Bonus.BonusType[] ApplicableBonusTypes {get;}
-
-    public void ApplyBonus(BonusScript.Bonus bonus)
+    public void OnBonusAdded(BonusScript.Bonus bonus)
     {
-        if (Array.Exists(ApplicableBonusTypes, type => bonus.type == type))
-        {
-            BonusList.Add(bonus);
-        }
+        
     }
-
-    public void ResetBonuses()
+    
+    public void OnBonusDeleted(BonusScript.Bonus bonus)
     {
-        BonusList.Clear();
+        
     }
 }

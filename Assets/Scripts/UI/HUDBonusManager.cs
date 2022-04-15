@@ -25,4 +25,12 @@ public class HUDBonusManager : MonoBehaviour
         }
         go.GetComponent<HUDBonusScript>().maxDuration = bonus.duration;
     }
+    
+    public void ResetBonuses()
+    {
+        foreach (Transform child in root)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 }

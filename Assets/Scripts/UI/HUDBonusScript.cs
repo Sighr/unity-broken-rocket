@@ -13,9 +13,9 @@ public class HUDBonusScript : MonoBehaviour
         _duration = maxDuration;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        _duration -= Time.deltaTime;
+        _duration -= Time.fixedDeltaTime;
         image.fillAmount = _duration / maxDuration;
         if (_duration < 0)
         {
